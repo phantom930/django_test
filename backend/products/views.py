@@ -8,6 +8,10 @@ from .serializers import ProductSerializer
 @api_view(['GET'])
 def product_list(request):
   search_query = request.GET.get('query', '')
-  products = Product.objects.filter(name_icontains=search_query)
+
+  if not search_query:
+    return Response([])
+
+  products = Product.objects.filter(name__icontains=search_query)
   serializer = ProductSerializer(products, many=True)
   return Response(serializer.data)
