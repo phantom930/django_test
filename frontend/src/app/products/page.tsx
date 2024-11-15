@@ -2,11 +2,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetchProducts, Product } from '../actions';
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState<string>('');
+  const router = useRouter()
 
   useEffect(() => {
     const fetchProductList = async () => {
@@ -15,6 +17,13 @@ const Products: React.FC = () => {
     };
     fetchProductList();
   }, [query]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router])
 
   return (
     <div className="container mx-auto p-4">
