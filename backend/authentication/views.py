@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -15,3 +16,8 @@ def login(request):
     token, _ = Token.objects.get_or_create(user=user)
     return Response({"token": token.key})
   return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def logout(request):
+    return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)

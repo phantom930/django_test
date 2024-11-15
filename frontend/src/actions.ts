@@ -5,6 +5,10 @@ interface LoginResponse {
   token: string
 }
 
+interface LogoutResponse {
+  message: string
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -24,6 +28,13 @@ export const login = async (username: string, password: string): Promise<LoginRe
   localStorage.setItem('token', response.data.token);
   return response.data;
 };
+
+// Logout function
+export const logout = async (): Promise<LogoutResponse> => {
+  const response = await API.post<LogoutResponse>('/authentication/logout', {});
+  localStorage.removeItem('token');
+  return response.data;
+}
 
 // Fetch products function with typed query parameter and return type
 export const fetchProducts = async (query: string): Promise<Product[]> => {
