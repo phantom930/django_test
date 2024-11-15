@@ -10,6 +10,7 @@ const Products: React.FC = () => {
   const [query, setQuery] = useState<string>('');
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const router = useRouter()
   const token = localStorage.getItem('token');
 
@@ -36,6 +37,18 @@ const Products: React.FC = () => {
       console.error("Logout failed:", error)
     }
   }
+
+  const handleRowClick = (id: number) => {
+    setSelectedRows((prevSelectedRows) => {
+      const updatedSelection = new Set(prevSelectedRows);
+      if (updatedSelection.has(id)) {
+        updatedSelection.delete(id); // Deselect if already selected
+      } else {
+        updatedSelection.add(id); // Select if not already selected
+      }
+      return updatedSelection;
+    });
+  };
 
   const sortProducts = (column: string) => {
     const newSortOrder = sortColumn === column && sortOrder === 'asc' ? 'desc' : 'asc';
@@ -100,7 +113,13 @@ const Products: React.FC = () => {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.id} className="text-center border-b">
+            <tr
+              key={product.id}
+              className={`text-center border-b cursor-pointer ${
+                selectedRows.has(product.id) ? 'bg-blue-100' : ''
+              }`}
+              onClick={() => handleRowClick(product.id)}
+            >
               <td className="p-2">{product.id}</td>
               <td className="p-2">{product.name}</td>
               <td className="p-2">{product.description}</td>
