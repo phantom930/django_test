@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '../actions'
+import { login } from '../../actions'
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
