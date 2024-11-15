@@ -6,7 +6,7 @@ class TokenAuthMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path in ['/authentication/login', '/authentication/logout'] or request.path.startswith('/admin'):
+        if request.path in ['/authentication/login', '/authentication/logout', '/products/select'] or request.path.startswith('/admin'):
             return self.get_response(request)
         
         auth_header = request.headers.get('Authorization')

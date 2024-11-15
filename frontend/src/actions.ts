@@ -15,6 +15,7 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
+  select: boolean;
 }
 
 // Create Axios Instance
@@ -45,3 +46,13 @@ export const fetchProducts = async (query: string): Promise<Product[]> => {
   });
   return response.data;
 };
+
+// Select product item
+export const selectProduct = async (id: number): Promise<Product> => {
+  const response = await API.post<Product>(`/products/select`, { id }, {
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`,
+    },
+  });
+  return response.data;
+}

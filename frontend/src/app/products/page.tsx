@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchProducts, logout, Product } from '../../actions';
+import { fetchProducts, selectProduct, logout, Product } from '../../actions';
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,7 +17,11 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       const data = await fetchProducts(query);
+      const selectedProducts = data
+                              .filter(product => product.select)
+                              .map(product => product.id)
       setProducts(data);
+      setSelectedRows(() => new Set(selectedProducts))
     };
     fetchProductList();
   }, [query]);
@@ -38,16 +42,21 @@ const Products: React.FC = () => {
     }
   }
 
-  const handleRowClick = (id: number) => {
-    setSelectedRows((prevSelectedRows) => {
-      const updatedSelection = new Set(prevSelectedRows);
-      if (updatedSelection.has(id)) {
-        updatedSelection.delete(id); // Deselect if already selected
-      } else {
-        updatedSelection.add(id); // Select if not already selected
-      }
-      return updatedSelection;
-    });
+  const handleRowClick = async (id: number) => {
+    try {
+      const data = await selectProduct(id);
+      setSelectedRows((prevSelectedRows) => {
+        const updatedSelection = new Set(prevSelectedRows);
+        if (updatedSelection.has(data.id)) {
+          updatedSelection.delete(data.id); // Deselect if already selected
+        } else {
+          updatedSelection.add(data.id); // Select if not already selected
+        }
+        return updatedSelection;
+      });
+    } catch (error) {
+      console.error("Request failed:", error)
+    }
   };
 
   const sortProducts = (column: string) => {
