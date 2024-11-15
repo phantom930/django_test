@@ -1,21 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { login } from '../actions'
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // try {
-    //   await login(username, password);
-    //   router.push('/products');
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    // }
+    try {
+      await login(username, password);
+      router.push('/products');
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
