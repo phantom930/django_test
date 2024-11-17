@@ -17,11 +17,8 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProductList = async () => {
       const data = await fetchProducts(query);
-      const selectedProducts = data
-                              .filter(product => product.select)
-                              .map(product => product.id)
-      setProducts(data);
-      setSelectedRows(() => new Set(selectedProducts))
+      setProducts(data.products);
+      setSelectedRows(() => new Set(data.selected))
     };
     fetchProductList();
   }, [query]);

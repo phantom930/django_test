@@ -9,13 +9,17 @@ interface LogoutResponse {
   message: string
 }
 
+interface ProductResponse {
+  products: Product[];
+  selected: number[];
+}
+
 export interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
   stock: number;
-  select: boolean;
 }
 
 // Create Axios Instance
@@ -32,14 +36,18 @@ export const login = async (username: string, password: string): Promise<LoginRe
 
 // Logout function
 export const logout = async (): Promise<LogoutResponse> => {
-  const response = await API.post<LogoutResponse>('/authentication/logout', {});
+  const response = await API.post<LogoutResponse>('/authentication/logout', {}, {
+    headers: {
+      Authorization: `Token ${localStorage.getItem('token')}`,
+    },
+  });
   localStorage.removeItem('token');
   return response.data;
 }
 
 // Fetch products function with typed query parameter and return type
-export const fetchProducts = async (query: string): Promise<Product[]> => {
-  const response = await API.get<Product[]>(`/products/list?query=${query}`, {
+export const fetchProducts = async (query: string): Promise<ProductResponse> => {
+  const response = await API.get<ProductResponse>(`/products/list?query=${query}`, {
     headers: {
       Authorization: `Token ${localStorage.getItem('token')}`,
     },

@@ -17,7 +17,7 @@ def login(request):
     return Response({"token": token.key})
   return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
+@csrf_exempt
 @api_view(['POST'])
 def logout(request):
     return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
