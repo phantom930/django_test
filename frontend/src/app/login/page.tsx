@@ -19,7 +19,8 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(username, password);
+      const data = await login(username, password);      
+      localStorage.setItem('token', data.token);
       router.push('/products');
     } catch (error) {
       console.error("Login failed:", error);

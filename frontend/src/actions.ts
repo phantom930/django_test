@@ -30,7 +30,6 @@ const API = axios.create({
 // Login function with typed parameters and return type
 export const login = async (username: string, password: string): Promise<LoginResponse> => {
   const response = await API.post<LoginResponse>('/authentication/login', { username, password });
-  localStorage.setItem('token', response.data.token);
   return response.data;
 };
 
@@ -41,7 +40,6 @@ export const logout = async (): Promise<LogoutResponse> => {
       Authorization: `Token ${localStorage.getItem('token')}`,
     },
   });
-  localStorage.removeItem('token');
   return response.data;
 }
 

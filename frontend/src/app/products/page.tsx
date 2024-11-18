@@ -1,4 +1,3 @@
-// app/products/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,16 +10,32 @@ const Products: React.FC = () => {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const router = useRouter()
-  const token = localStorage.getItem('token');
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const savedSearch = localStorage.getItem('searchQuery');
+    const token = localStorage.getItem('token')
+    if (savedSearch) {
+      setQuery(savedSearch);
+    }
+    if (token) {
+      setAuthenticated(true);
+    }
+  }, [])
 
   useEffect(() => {
     const fetchProductList = async () => {
       const data = await fetchProducts(query);
       setProducts(data.products);
-      setSelectedRows(() => new Set(data.selected))
+      setSelectedRows(() => new Set(data.selected));
     };
-    fetchProductList();
+    if (query) {
+      fetchProductList();
+      localStorage.setItem("searchQuery", query)
+    } else {
+      setProducts([]);
+    }
   }, [query]);
 
   useEffect(() => {
@@ -33,6 +48,8 @@ const Products: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      localStorage.removeItem('token');
+      localStorage.removeItem('searchQuery');
       router.push('/login');
     } catch (error) {
       console.error("Logout failed:", error)
@@ -83,7 +100,7 @@ const Products: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {token && (
+      {authenticated && (
         <button
           className="px-8 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 absolute top-4 right-4"
           onClick={handleLogout}
@@ -94,6 +111,7 @@ const Products: React.FC = () => {
       <input
         type="text"
         placeholder="Search..."
+        value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="w-full p-2 mb-4 border border-gray-300 rounded"
       />
